@@ -15,8 +15,9 @@ lexicalize(doclines, sep = " ", lower = TRUE, count = 1L, vocab = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{doclines}{
-    The pathname pointing to a text file which will be used to construct
-    a corpus.  See details for a description of the format of this file.
+    A character vector of document lines to be used to construct
+    a corpus.  See details for a description of the format of these
+    lines. 
 }
   \item{sep}{
     Separator string which is used to tokenize the input strings
@@ -58,7 +59,7 @@ lexicalize(doclines, sep = " ", lower = TRUE, count = 1L, vocab = NULL)
 }
 \value{
   If \var{vocab} is unspecified or \code{NULL}, a list with two components:
-  \item{documents}{documents }
+  \item{documents}{A list of document matrices in the format described in \code{\link{lda.collapsed.gibbs.sampler}}.}
   \item{vocab}{A character vector of unique tokens occurring in the corpus.}
 }
 \author{

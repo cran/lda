@@ -15,14 +15,22 @@
 \tabular{ll}{
 Package: \tab lda\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2009-09-12\cr
+Version: \tab 1.2\cr
+Date: \tab 2010-02-14\cr
 License: \tab BSD \cr
 LazyLoad: \tab yes\cr
 }
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})  
+  Jonathan Chang (\email{jcone@princeton.edu})
+
+  Special thanks to the following for their reports and comments:
+  Edo Airoldi,
+  Jordan Boyd-Graber,
+  Khalid El-Arini,
+  Roger Levy,
+  Solomon Messing,
+  Joerg Reichardt 
 }
 \references{
   \cite{Blei, David M. and Ng, Andrew and Jordan, Michael. Latent Dirichlet allocation. Journal of Machine Learning Research, 2003.}
@@ -34,6 +42,7 @@ Functions to fit models:
 \code{\link{slda.em}}
 \code{\link{mmsb.collapsed.gibbs.sampler}}
 \code{\link{nubbi.collapsed.gibbs.sampler}}
+\code{\link{rtm.collapsed.gibbs.sampler}}
 
 Functions to read/create corpora:
 \code{\link{lexicalize}}
@@ -69,4 +78,6 @@ Included data sets:
 \dontrun{demo(slda)}
 
 \dontrun{demo(mmsb)}
+
+\dontrun{demo(rtm)}
 }

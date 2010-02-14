@@ -1,4 +1,5 @@
 require("ggplot2")
+require("lda")
 
 theme_set(theme_bw())
 

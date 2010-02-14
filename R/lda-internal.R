@@ -1,14 +1,14 @@
 .slda.collapsed.gibbs.sampler <-
 function (documents, K, vocab, num.iterations, alpha, eta, annotations, 
     beta, variance, logistic = FALSE, method = "sLDA", lambda, 
-    initial = NULL, burnin = NULL) 
+    initial = NULL, burnin = NULL, trace = 0L) 
 {
     retval <- structure(.Call("collapsedGibbsSampler", documents, 
         as.integer(K), as.integer(length(vocab)), as.integer(num.iterations), 
         as.double(alpha), as.double(eta), if (!logistic) as.double(annotations) else as.logical(annotations), 
         as.double(beta), as.double(variance), pmatch(method, 
             c("sLDA", "corrLDA", "prodLDA")), as.double(lambda), 
-        NULL, NULL, initial, burnin, FALSE), names = c("assignments", 
+        NULL, NULL, initial, burnin, FALSE, trace), names = c("assignments", 
         "topics", "topic_sums", "document_sums"))
     colnames(retval$topics) <- vocab
     retval
@@ -43,13 +43,13 @@ function (filename, vocab = NULL, num.topics = NULL, ignore.last.row = TRUE)
 }
 .pairwise.link.lda.collapsed.gibbs.sampler <-
 function (documents, K, vocab, num.iterations, alpha, eta, nbeta, 
-    net.annotations, initial = NULL, burnin = NULL) 
+    net.annotations, initial = NULL, burnin = NULL, trace = 0L) 
 {
     retval <- structure(.Call("collapsedGibbsSampler", documents, 
         as.integer(K), as.integer(length(vocab)), as.integer(num.iterations), 
         as.double(alpha), as.double(eta), NULL, NULL, NULL, NULL, 
         NULL, nbeta, as.logical(net.annotations), initial, burnin, 
-        FALSE), names = c("assignments", "topics", "topic_sums", 
+        FALSE, trace), names = c("assignments", "topics", "topic_sums", 
         "document_sums", NA, "net.assignments.left", "net.assignments.right", 
         "blocks.neg", "blocks.pos"))
     colnames(retval$topics) <- vocab

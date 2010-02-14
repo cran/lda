@@ -1,6 +1,7 @@
 \name{rtm.collapsed.gibbs.sampler}
 \Rdversion{1.1}
 \alias{rtm.collapsed.gibbs.sampler}
+\alias{rtm.em}
 
 \title{
   Collapsed Gibbs Sampling for the Relational Topic Model (RTM).
@@ -10,7 +11,10 @@
   occur in a collection of documents as well as the links between the documents.
 }
 \usage{
-rtm.collapsed.gibbs.sampler(documents, links, K, vocab, num.iterations, alpha, eta, beta)
+rtm.collapsed.gibbs.sampler(documents, links, K, vocab, num.iterations,
+  alpha, eta, beta, trace = 0L)
+rtm.em(documents, links, K, vocab, num.e.iterations, num.m.iterations,
+  alpha, eta, lambda = 0.01, initial.beta = rep(3, K), trace = 0L)
 }
 
 \arguments{
@@ -35,6 +39,12 @@ rtm.collapsed.gibbs.sampler(documents, links, K, vocab, num.iterations, alpha, e
   \item{num.iterations}{
     The number of sweeps of Gibbs sampling over the entire corpus to make.
 }
+  \item{num.e.iterations}{
+    For \code{rtm.em}, the number of iterations in each Gibbs sampling E-step.
+}
+  \item{num.m.iterations}{
+    For \code{rtm.em}, the number of M-step iterations.
+}
   \item{alpha}{
     The scalar value of the Dirichlet hyperparameter for
     topic proportions. 
@@ -43,9 +53,23 @@ rtm.collapsed.gibbs.sampler(documents, links, K, vocab, num.iterations, alpha, e
     The scalar value of the Dirichlet hyperparamater for topic
     multinomials.
 }
-  \item{beta}{
+\item{beta}{
     A length \code{K} numeric of regression coefficients expressing the
   relationship between each topic and the probability of link.
+}
+\item{lambda}{
+  For \code{rtm.em}, the regularization parameter used when estimating
+  beta.  \var{lambda} expresses the number of non-links to simulate
+  among all 
+  possible connections between documents.
+}
+  \item{initial.beta}{
+    For \code{rtm.em}, an initial value of \code{beta} at which to start
+  the EM process.
+  }
+  \item{trace}{
+    When \code{trace} is greater than zero, diagnostic messages will be
+  output.  Larger values of \code{trace} imply more messages.
 }
 }
 \details{
@@ -58,6 +82,10 @@ rtm.collapsed.gibbs.sampler(documents, links, K, vocab, num.iterations, alpha, e
   is implemented here.  Note that the collapsed Gibbs sampler is
   different than the variational inference procedure proposed in the
   paper and is extremely experimental.
+
+  \code{rtm.em} provides an EM-wrapper around
+  \code{rtm.collapsed.gibbs.sampler} which iteratively estimates the
+  regression parameters \code{beta}.
 }
 \value{
   A fitted model as a list with the same components as returned by

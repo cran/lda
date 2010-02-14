@@ -1,11 +1,12 @@
 rtm.collapsed.gibbs.sampler <-
 function (documents, links, K, vocab, num.iterations, alpha, 
-    eta, beta) 
+    eta, beta, trace = 0L) 
 {
     retval <- structure(.Call("rtm", documents, links, as.integer(K), 
         length(vocab), as.integer(num.iterations), as.double(alpha), 
-        as.double(eta), rep(as.double(beta), length.out = K)), 
-        names = c("assignments", "topics", "topic_sums", "document_sums"))
+        as.double(eta), rep(as.double(beta), length.out = K), 
+        trace), names = c("assignments", "topics", "topic_sums", 
+        "document_sums"))
     colnames(retval$topics) <- vocab
     retval
 }

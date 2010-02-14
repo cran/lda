@@ -270,7 +270,8 @@ SEXP rtm(SEXP documents,
 	 SEXP N_,
 	 SEXP alpha_,
 	 SEXP eta_,
-	 SEXP beta_) {
+	 SEXP beta_,
+	 SEXP trace_) {
   GetRNGstate();
   int ii;
   int dd;
@@ -289,6 +290,9 @@ SEXP rtm(SEXP documents,
   int V = INTEGER(V_)[0];
   CHECKLEN(N_, Integer, 1);
   int N = INTEGER(N_)[0];  
+
+  CHECKLEN(trace_, Integer, 1);
+  int trace = INTEGER(trace_)[0];
 
   // Check the hyperparameters.
   CHECKLEN(alpha_, Real, 1);
@@ -350,7 +354,9 @@ SEXP rtm(SEXP documents,
   double* link_probs = (double*) R_alloc(K, sizeof(double));
   
    for (ii = 0; ii < N; ++ii) {
-     printf("Iteration %d\n", ii);
+     if (trace > 0) {
+       printf("Iteration %d\n", ii);
+     }
      for (dd = 0; dd < D; ++dd) {
        R_CheckUserInterrupt();
 
@@ -372,6 +378,7 @@ SEXP rtm(SEXP documents,
 	     link_probs[kk] *= 
 	       exp(REAL(beta_)[kk] * 
 		   INTEGER(document_sums)[kk + K * dd2] /
+		   document_lengths[dd] /
 		   document_lengths[dd2]);
 	   }
 	 }
@@ -450,7 +457,8 @@ SEXP collapsedGibbsSampler(SEXP documents,
 			   SEXP net_annotations,
 			   SEXP initial_,
 			   SEXP burnin_,
-			   SEXP compute_log_likelihood_) {
+			   SEXP compute_log_likelihood_,
+			   SEXP trace_) {
   GetRNGstate();
   int dd;
   int ii;
@@ -468,6 +476,9 @@ SEXP collapsedGibbsSampler(SEXP documents,
 
   CHECKLEN(K_, Integer, 1);
   int K = INTEGER(K_)[0];
+
+  CHECKLEN(trace_, Integer, 1);
+  int trace = INTEGER(trace_)[0];
 
   CHECK(V_, Integer);
   int V = 0;
@@ -571,7 +582,7 @@ SEXP collapsedGibbsSampler(SEXP documents,
   CHECKLEN(compute_log_likelihood_, Logical, 1);
   int compute_log_likelihood = LOGICAL(compute_log_likelihood_)[0];
   if (compute_log_likelihood) {
-    SET_VECTOR_ELT(retval, 9, log_likelihood = allocVector(REALSXP, N));
+    SET_VECTOR_ELT(retval, 9, log_likelihood = allocMatrix(REALSXP, 2, N));
   }
   if (length(burnin_) > 0) {
     CHECKLEN(burnin_, Integer, 1);
@@ -693,9 +704,22 @@ SEXP collapsedGibbsSampler(SEXP documents,
     p_pair = (double *)R_alloc(K * K, sizeof(double));
   }
 
+
+  double const_prior = 0;
+  double const_ll = 0;
+
+  if (compute_log_likelihood) {
+    //                log B(\alpha)
+    const_prior = (K * lgammafn(alpha) - lgammafn(alpha * K)) * nd;
+    //                log B(\eta)
+    const_ll = (V * lgammafn(eta) - lgammafn(eta * V)) * K; 
+  }
+
   int iteration;
   for (iteration = 0; iteration < N; ++iteration) {
-    printf("Iteration %d\n", iteration);
+    if (trace >= 1) {
+      printf("Iteration %d\n", iteration);
+    }
     for (dd = 0; dd < nd; ++dd) {
       R_CheckUserInterrupt();
       SEXP zs = VECTOR_ELT(assignments, dd);
@@ -740,8 +764,8 @@ SEXP collapsedGibbsSampler(SEXP documents,
 	      if (*z == -1) {
 		p_pair[ii * K + jj] = 1.0;
 	      } else {
-		p_pair[ii * K + jj] = INTEGER(document_sums)[K * dd + ii] *
-		  INTEGER(document_sums)[K * ww + jj]; 
+		p_pair[ii * K + jj] = (INTEGER(document_sums)[K * dd + ii] + alpha)*
+		  (INTEGER(document_sums)[K * ww + jj] + alpha); 
 		if (y == 1) {
 		  p_pair[ii * K + jj] *= INTEGER(nbeta_one)[ii * K + jj] + 
 		    REAL(VECTOR_ELT(nbeta, 1))[ii * K + jj];
@@ -933,25 +957,32 @@ SEXP collapsedGibbsSampler(SEXP documents,
     }
 
 
-    /*Compute the likelihoods*/
+    /*Compute the likelihoods:*/
     if (compute_log_likelihood) {
-      double ll = 0;
+      double doc_ll = 0;
       for (dd = 0; dd < nd; ++dd) {
+	double sum = alpha * K;
 	for (kk = 0; kk < K; ++kk) {
-	  ll += lgammafn(INTEGER(document_sums)[K * dd + kk] + alpha);
+	  doc_ll += lgammafn(INTEGER(document_sums)[K * dd + kk] + alpha);
+	  sum += INTEGER(document_sums)[K * dd + kk];
 	}
+	doc_ll -= lgammafn(sum);
       }
+      double topic_ll = 0;
       for (kk = 0; kk < K; ++kk) {
 	double sum = eta * V;
-	for (ii = 0; ii < length(V_); ++ii) {
-	  sum += INTEGER(topic_sums)[kk + K * ii];
-	}
-	ll -= lgammafn(sum);
 	for (ii = 0; ii < V; ++ii) {
-	  ll += lgammafn(INTEGER(topics)[kk + K * ii] + eta);
+	  topic_ll += lgammafn(INTEGER(topics)[kk + K * ii] + eta);
+	  sum += INTEGER(topics)[kk + K * ii];
 	}
+	topic_ll -= lgammafn(sum);
       }
-      REAL(log_likelihood)[iteration] = ll;
+      if (trace >= 2) {
+	printf("ll: %g + %g - %g - %g = %g\n", doc_ll, topic_ll, const_ll, const_prior,
+	       doc_ll + topic_ll - const_ll - const_prior);
+      }
+      REAL(log_likelihood)[2 * iteration] = doc_ll - const_prior + topic_ll - const_ll;
+      REAL(log_likelihood)[2 * iteration + 1] = topic_ll - const_ll;
     }
   }
 

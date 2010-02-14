@@ -17,11 +17,15 @@
 }
 \usage{
 lda.collapsed.gibbs.sampler(documents, K, vocab, num.iterations, alpha,
-eta, initial = NULL, burnin = NULL, compute.log.likelihood = FALSE)
+eta, initial = NULL, burnin = NULL, compute.log.likelihood = FALSE,
+  trace = 0L)
 
-slda.em(documents, K, vocab, num.e.iterations, num.m.iterations, alpha, eta, annotations, params, variance, logistic = FALSE, lambda = 10, method = "sLDA")
+slda.em(documents, K, vocab, num.e.iterations, num.m.iterations, alpha,
+eta, annotations, params, variance, logistic = FALSE, lambda = 10,
+method = "sLDA", trace = 0L)
 
-mmsb.collapsed.gibbs.sampler(network, K, num.iterations, alpha, beta.prior, initial = NULL, burnin = NULL)
+mmsb.collapsed.gibbs.sampler(network, K, num.iterations, alpha,
+beta.prior, initial = NULL, burnin = NULL, trace = 0L)
 }
 
 \arguments{
@@ -85,7 +89,7 @@ mmsb.collapsed.gibbs.sampler(network, K, num.iterations, alpha, beta.prior, init
     and \code{mmsb.collapsed.gibbs.sampler}.  If this parameter is non-NULL, it
     will also have the side-effect of enabling the
     \var{document_expects} field of the return value (see below for
-    details). 
+    details).  Note that burnin iterations do NOT count towards \var{num.iterations}.
   }
   \item{compute.log.likelihood}{
     A scalar logical which when \code{TRUE} will cause the sampler to
@@ -120,6 +124,10 @@ mmsb.collapsed.gibbs.sampler(network, K, num.iterations, alpha, beta.prior, init
   annotations.  Only \code{"sLDA"}, the stock model given in the
   references, is officially supported at the moment.
 }
+  \item{trace}{
+    When \code{trace} is greater than zero, diagnostic messages will be
+  output.  Larger values of \code{trace} imply more messages.
+}
 
 }
 \value{
@@ -137,8 +145,11 @@ A fitted model as a list with the following components:
     integer indicating the number of times words in each document
     (column) were assigned to each topic (column).}
   \item{log.likelihoods}{Only for \code{lda.collapsed.gibbs.sampler}.  A
-    length \code{num.iterations} vector of log likelihoods when the flag
-    \code{compute.log.likelihood} is set to \code{TRUE}.}
+    matrix with 2 rows and \code{num.iterations} columns of log likelihoods when the flag
+    \code{compute.log.likelihood} is set to \code{TRUE}.  The first row
+    contains the full log likelihood (including the prior), whereas the
+    second row contains the log likelihood of the observations
+    conditioned on the assignments.}
   \item{document_expects}{This field only exists if \var{burnin} is
     non-NULL. This field is like document_sums but instead of only
     aggregating counts for the last iteration, this field aggegates
@@ -196,8 +207,8 @@ A fitted model as a list with the following components:
  \code{\link{read.documents}} and \code{\link{lexicalize}} can be used
     to generate the input data to these models.
 
-    \code{\link{top.topic.words}} and
-    \code{\link{predictive.distribution}} for operations on the fitted models. 
+    \code{\link{top.topic.words}},
+    \code{\link{predictive.distribution}}, and \code{\link{slda.predict}} for operations on the fitted models. 
 }
 \examples{
 ## See demos for the three functions:

@@ -1,7 +1,6 @@
 \name{predictive.distribution}
 \Rdversion{1.1}
 \alias{predictive.distribution}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
   Compute predictive distributions for fitted LDA-type models.
 }

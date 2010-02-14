@@ -1,8 +1,8 @@
 Package: lda
 Type: Package
 Title: Collapsed Gibbs sampling methods for topic models.
-Version: 1.1
-Date: 2009-09-26
+Version: 1.2
+Date: 2010-02-14
 Author: Jonathan Chang
 Maintainer: Jonathan Chang <jcone@princeton.edu>
 Description: This package implements latent Dirichlet allocation (LDA)
@@ -15,6 +15,6 @@ Description: This package implements latent Dirichlet allocation (LDA)
 License: LGPL
 LazyLoad: yes
 Suggests: Matrix, ggplot2
-Packaged: 2009-09-29 05:04:56 UTC; jonchang
+Packaged: 2010-02-28 20:48:16 UTC; jonchang
 Repository: CRAN
-Date/Publication: 2009-09-29 18:49:24
+Date/Publication: 2010-03-08 10:29:45

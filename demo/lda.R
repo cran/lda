@@ -11,7 +11,8 @@ result <- lda.collapsed.gibbs.sampler(cora.documents,
                                       cora.vocab,
                                       25,  ## Num iterations
                                       0.1,
-                                      0.1) 
+                                      0.1,
+                                      compute.log.likelihood=TRUE) 
 
 ## Get the top words in the cluster
 top.words <- top.topic.words(result$topics, 5, by.score=TRUE)
