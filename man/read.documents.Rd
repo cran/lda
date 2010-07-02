@@ -67,7 +67,7 @@ read.vocab(filename = "vocab.dat")
   \cite{Blei, David M.  Latent Dirichlet Allocation in C. \url{http://www.cs.princeton.edu/~blei/lda-c/index.html}}
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})
+  Jonathan Chang (\email{jonchang@facebook.com})
 }
 
 \seealso{

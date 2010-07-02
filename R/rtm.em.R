@@ -1,6 +1,7 @@
 rtm.em <-
 function (documents, links, K, vocab, num.e.iterations, num.m.iterations, 
-    alpha, eta, lambda = 0.01, initial.beta = rep(3, K), trace = 0L) 
+    alpha, eta, lambda = 0.01, initial.beta = rep(3, K), trace = 0L, 
+    test.start = length(documents) + 1L) 
 {
     estimate.params <- function(document.sums) {
         z.bar. <- t(document.sums + alpha)/colSums(document.sums + 
@@ -18,14 +19,14 @@ function (documents, links, K, vocab, num.e.iterations, num.m.iterations,
     num.e.iterations <- rep(num.e.iterations, length.out = num.m.iterations)
     result <- rtm.collapsed.gibbs.sampler(documents, links, K, 
         vocab, num.e.iterations[1], alpha, eta, initial.beta, 
-        trace)
+        trace, test.start)
     beta <- estimate.params(result$document_sums)
     for (ii in seq(length.out = num.m.iterations - 1)) {
         cat("M-step iteration ")
         print(ii + 1)
         result <- rtm.collapsed.gibbs.sampler(documents, links, 
             K, vocab, num.e.iterations[ii + 1], alpha, eta, beta, 
-            trace)
+            trace, test.start)
         beta <- estimate.params(result$document_sums)
     }
     c(result, list(beta = beta))

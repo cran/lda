@@ -257,8 +257,10 @@ SEXP nubbi(SEXP documents,
 }
 
 #define UPDATERTMSUMS(weight) { \
-  INTEGER(topics)[z + K * word] += weight * count; \
-  INTEGER(topic_sums)[z] += weight * count; \
+  if (dd < test_start) { \
+    INTEGER(topics)[z + K * word] += weight * count; \
+    INTEGER(topic_sums)[z] += weight * count; \
+  } \
   INTEGER(document_sums)[z + K * dd] += weight * count; \
   }
 
@@ -271,7 +273,8 @@ SEXP rtm(SEXP documents,
 	 SEXP alpha_,
 	 SEXP eta_,
 	 SEXP beta_,
-	 SEXP trace_) {
+	 SEXP trace_,
+	 SEXP test_start_) {
   GetRNGstate();
   int ii;
   int dd;
@@ -294,6 +297,9 @@ SEXP rtm(SEXP documents,
   CHECKLEN(trace_, Integer, 1);
   int trace = INTEGER(trace_)[0];
 
+  CHECKLEN(test_start_, Integer, 1);
+  int test_start = INTEGER(test_start_)[0];
+
   // Check the hyperparameters.
   CHECKLEN(alpha_, Real, 1);
   double alpha = REAL(alpha_)[0];
@@ -306,14 +312,16 @@ SEXP rtm(SEXP documents,
   SEXP topics;
   SEXP topic_sums;
   SEXP document_sums;
+  SEXP likelihoods;
 
   SEXP retval;
-  PROTECT(retval = allocVector(VECSXP, 4));
+  PROTECT(retval = allocVector(VECSXP, 5));
   
   SET_VECTOR_ELT(retval, 0, topic_assignments = allocVector(VECSXP, D));
   SET_VECTOR_ELT(retval, 1, topics = allocMatrix(INTSXP, K, V));
   SET_VECTOR_ELT(retval, 2, topic_sums = allocVector(INTSXP, K));
   SET_VECTOR_ELT(retval, 3, document_sums = allocMatrix(INTSXP, K, D));
+  SET_VECTOR_ELT(retval, 4, likelihoods = allocMatrix(REALSXP, D, N));
   
   // Allocate some working memory.
   int* document_lengths = (int*) R_alloc(D, sizeof(int));
@@ -329,7 +337,7 @@ SEXP rtm(SEXP documents,
   for (dd = 0; dd < D; ++dd) {
     SEXP document = VECTOR_ELT(documents, dd);
     SEXP link = VECTOR_ELT(links, dd);
-
+    
     CHECK(link, Integer);
     CHECKMATROW(document, Integer, 2);
 
@@ -353,91 +361,115 @@ SEXP rtm(SEXP documents,
   double* probs = (double*) R_alloc(K, sizeof(double));
   double* link_probs = (double*) R_alloc(K, sizeof(double));
   
-   for (ii = 0; ii < N; ++ii) {
-     if (trace > 0) {
-       printf("Iteration %d\n", ii);
-     }
-     for (dd = 0; dd < D; ++dd) {
-       R_CheckUserInterrupt();
-
-       SEXP document = VECTOR_ELT(documents, dd);
-       SEXP link = VECTOR_ELT(links, dd);
-       SEXP topic_assignment = VECTOR_ELT(topic_assignments, dd);
-       
-       // First calculate the per-document link probabilities.
-       if (ii > 0) {
-	 for (kk = 0; kk < K; ++kk) {
-	   link_probs[kk] = 1.0;
-	 }
-	 for (ll = 0; ll < length(link); ++ll) {
-	   int dd2 = INTEGER(link)[ll];
-	   if (dd2 < 0 || dd2 >= D) {
-	     error("Link out of range.");
-	   }
-	   for (kk = 0; kk < K; ++kk) {
-	     link_probs[kk] *= 
-	       exp(REAL(beta_)[kk] * 
-		   INTEGER(document_sums)[kk + K * dd2] /
-		   document_lengths[dd] /
-		   document_lengths[dd2]);
-	   }
-	 }
-       }
-       
-       int W = NUMCOLS(document);
-       for (ww = 0; ww < W; ++ww) {
-	 int z = INTEGER(topic_assignment)[ww];
-
-	 int word = INTEGER(document)[2 * ww + 0];
-	 int count = INTEGER(document)[2 * ww + 1];
-	 
-	 if (word < 0 || word >= V) {
-	   error("word out of range.");
-	 }
-
-	 if (ii > 0) {
-	   UPDATERTMSUMS(-1);
-	 }
-	 /* Compute transition probabilities. */
-	 double psum = 0;
-	 for (kk = 0; kk < K; ++kk) {
-	   if (ii > 0) {
-	     probs[kk] = link_probs[kk] * 
-	       (INTEGER(document_sums)[kk + K * dd] + alpha) * 
-	       (INTEGER(topics)[kk + word * K] + eta) / 
-	       (INTEGER(topic_sums)[kk] + eta * V);
-	   } else {
-	     probs[kk] = 1.0;
-	   }
-	   psum += probs[kk];
-	 }
-
-	 /* Select a new one. */
-	 double r = unif_rand();
-	 z = -1;
-
-	 for (kk = 0; kk < K; ++kk) {
-	   if (r < probs[kk] / psum) {
-	     z = kk;
-	     break;
-	   }
-	   r -= probs[kk] / psum;
-	 }
-
-	 if (z == -1) {
-	   error("Internal error.");
-	 }
-
-	 /* Do the assignment. */
-	 UPDATERTMSUMS(1);
-	 INTEGER(topic_assignment)[ww] = z;
-      }
+  for (ii = 0; ii < N; ++ii) {
+    if (trace > 0) {
+      printf("Iteration %d\n", ii);
     }
-  }  
-
-  UNPROTECT(1);
-  PutRNGstate();  
-  return retval;
+    for (dd = 0; dd < D; ++dd) {
+      R_CheckUserInterrupt();
+      
+      SEXP document = VECTOR_ELT(documents, dd);
+      SEXP link = VECTOR_ELT(links, dd);
+      SEXP topic_assignment = VECTOR_ELT(topic_assignments, dd);
+      
+      // First calculate the per-document link probabilities.
+      if (ii > 0) {
+	for (kk = 0; kk < K; ++kk) {
+	  link_probs[kk] = 1.0;
+	}
+	for (ll = 0; ll < length(link); ++ll) {
+	  int dd2 = INTEGER(link)[ll];
+	  if (dd2 < 0 || dd2 >= D) {
+	    error("Link out of range.");
+	  }
+	  for (kk = 0; kk < K; ++kk) {
+	    link_probs[kk] *= 
+	      exp(REAL(beta_)[kk] * 
+		  INTEGER(document_sums)[kk + K * dd2] /
+		  document_lengths[dd] /
+		  document_lengths[dd2]);
+	  }
+	}
+      }
+      
+      int W = NUMCOLS(document);
+      double doc_ll = 0.0;
+      for (ww = 0; ww < W; ++ww) {
+	int z = INTEGER(topic_assignment)[ww];
+	
+	int word = INTEGER(document)[2 * ww + 0];
+	int count = INTEGER(document)[2 * ww + 1];
+	
+	if (word < 0 || word >= V) {
+	  error("word out of range.");
+	}
+	
+	if (ii > 0) {
+	  UPDATERTMSUMS(-1);
+	}
+	/* Compute transition probabilities. */
+	double psum = 0;
+	int n_d = 0;
+	for (kk = 0; kk < K; ++kk) {
+	  n_d += INTEGER(document_sums)[kk + K * dd];
+	  if (ii > 0) {
+	    probs[kk] = link_probs[kk] * 
+	      (INTEGER(document_sums)[kk + K * dd] + alpha) * 
+	      (INTEGER(topics)[kk + word * K] + eta) / 
+	      (INTEGER(topic_sums)[kk] + eta * V);
+	  } else {
+	    probs[kk] = 1.0;
+	  }
+	  psum += probs[kk];
+	}
+	
+	/* Select a new one. */
+	double r = unif_rand();
+	z = -1;
+	
+	for (kk = 0; kk < K; ++kk) {
+	  if (r < probs[kk] / psum) {
+	    z = kk;
+	    break;
+	  }
+	  r -= probs[kk] / psum;
+	}
+	
+	if (z == -1) {
+	  error("Internal error.");
+	}
+	
+	/* Do the assignment. */
+	UPDATERTMSUMS(1);
+	INTEGER(topic_assignment)[ww] = z;
+	
+	double like = 0.0;
+	for (kk = 0; kk < K; ++kk) {
+	  like += (INTEGER(document_sums)[kk + K * dd] + alpha) / 
+	    (n_d + K * alpha) * 
+	    (INTEGER(topics)[kk + word * K] + eta) /
+	    (INTEGER(topic_sums)[kk] + eta * V);
+	}
+	doc_ll += log(like) * count;
+      }
+      /*
+      double doc_ll = 0;
+      double sum = alpha * K;
+      for (kk = 0; kk < K; ++kk) {
+	doc_ll += lgammafn(INTEGER(document_sums)[K * dd + kk] + alpha);
+	sum += INTEGER(document_sums)[K * dd + kk];
+      }
+      doc_ll -= lgammafn(sum);
+      doc_ll -= K * lgammafn(alpha) - lgammafn(alpha * K);
+      */
+      REAL(likelihoods)[dd + ii * D] = doc_ll;
+    }    
+    // const_ll = (V * lgammafn(eta) - lgammafn(eta * V)) * K; 
+  }
+  
+   UNPROTECT(1);
+   PutRNGstate();  
+   return retval;
 }
 
 

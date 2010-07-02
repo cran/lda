@@ -193,7 +193,7 @@ A fitted model as a list with the following components:
     topics.  Proceedings of the National Academy of Sciences, 2004.}
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})  
+  Jonathan Chang (\email{jonchang@facebook.com})  
 }
 \note{
   WARNING: This function does not compute precisely the correct thing

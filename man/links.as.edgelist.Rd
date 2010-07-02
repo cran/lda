@@ -22,7 +22,7 @@ links.as.edgelist(links)
   indices in this matrix are 1-indexed rather than 0-indexed.
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})
+  Jonathan Chang (\email{jonchang@facebook.com})
 }
 \seealso{
   \code{\link{rtm.collapsed.gibbs.sampler}} for the input format.

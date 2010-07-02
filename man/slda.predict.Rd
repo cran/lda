@@ -51,7 +51,7 @@ slda.predict(documents, topics, model, alpha = 1/nrow(topics), num.iterations = 
     Advances in Neural Information Processing Systems, 2008.}
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})
+  Jonathan Chang (\email{jonchang@facebook.com})
 }
 
 \seealso{

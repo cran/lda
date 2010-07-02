@@ -52,7 +52,7 @@ predictive.distribution(document_sums, topics, alpha, eta)
   \cite{Blei, David M. and Ng, Andrew and Jordan, Michael. Latent Dirichlet allocation. Journal of Machine Learning Research, 2003.}
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})  
+  Jonathan Chang (\email{jonchang@facebook.com})  
 }
 
 \seealso{

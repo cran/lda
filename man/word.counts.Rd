@@ -42,7 +42,7 @@ document.lengths(docs)
   the corpus.
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})
+  Jonathan Chang (\email{jonchang@facebook.com})
 }
 
 \seealso{

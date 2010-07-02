@@ -9,12 +9,26 @@ data(cora.titles)
 data(cora.cites)
 
 ## Fit an RTM model.
-rtm.model <- rtm.collapsed.gibbs.sampler(cora.documents,
+system.time(rtm.model <- rtm.collapsed.gibbs.sampler(cora.documents,
                                          cora.cites,
                                          8,
                                          cora.vocab,
                                          35,
-                                         0.1, 0.1, 3)
+                                         0.1, 0.1, 3))
+
+## Fit an LDA model to the topics
+result <- lda.collapsed.gibbs.sampler(cora.documents,
+                                      8, 
+                                      cora.vocab,
+                                      25,
+                                      0.1,
+                                      0.1,
+                                      initial =
+                                      list(topics = rtm.model$topics,
+                                           topic_sums = matrix(rtm.model$topic_sums)))
+                                   
+                                   
+
 
 ## Fit an LDA model by setting beta to zero.
 lda.model <- rtm.collapsed.gibbs.sampler(cora.documents,

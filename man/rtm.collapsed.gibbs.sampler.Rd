@@ -12,9 +12,10 @@
 }
 \usage{
 rtm.collapsed.gibbs.sampler(documents, links, K, vocab, num.iterations,
-  alpha, eta, beta, trace = 0L)
+  alpha, eta, beta, trace = 0L, test.start = length(documents) + 1L)
 rtm.em(documents, links, K, vocab, num.e.iterations, num.m.iterations,
-  alpha, eta, lambda = 0.01, initial.beta = rep(3, K), trace = 0L)
+  alpha, eta, lambda = 0.01, initial.beta = rep(3, K), trace = 0L,
+  test.start = length(documents) + 1L)
 }
 
 \arguments{
@@ -71,6 +72,9 @@ rtm.em(documents, links, K, vocab, num.e.iterations, num.m.iterations,
     When \code{trace} is greater than zero, diagnostic messages will be
   output.  Larger values of \code{trace} imply more messages.
 }
+\item{test.start}{
+  Internal use only.
+  }
 }
 \details{
   The Relational Topic Model uses LDA to model the content of
@@ -97,7 +101,7 @@ rtm.em(documents, links, K, vocab, num.e.iterations, num.m.iterations,
   intelligence and statistics. 2009.}
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})      
+  Jonathan Chang (\email{jonchang@facebook.com})      
 }
 \seealso{
   See \code{\link{lda.collapsed.gibbs.sampler}} for a description of the

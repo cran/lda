@@ -63,7 +63,7 @@ predictive.link.probability(edgelist, document_sums, alpha, beta)
   intelligence and statistics. 2009.}
 }
 \author{
-  Jonathan Chang (\email{jcone@princeton.edu})  
+  Jonathan Chang (\email{jonchang@facebook.com})  
 }
 \seealso{
   \code{\link{rtm.collapsed.gibbs.sampler}} for the format of
