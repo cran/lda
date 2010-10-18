@@ -1,7 +1,7 @@
 \name{sampson}
 \Rdversion{1.1}
 \alias{sampson}
-\docType{sampson}
+\docType{data}
 \title{
   Sampson monk data
 }
