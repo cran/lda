@@ -50,8 +50,9 @@ function (documents, K, vocab, num.iterations, alpha, eta, nbeta,
         as.double(alpha), as.double(eta), NULL, NULL, NULL, NULL, 
         NULL, nbeta, as.logical(net.annotations), initial, burnin, 
         FALSE, trace), names = c("assignments", "topics", "topic_sums", 
-        "document_sums", NA, "net.assignments.left", "net.assignments.right", 
-        "blocks.neg", "blocks.pos"))
+        "document_sums", if (is.null(burnin)) NA else "document_expects", 
+        "net.assignments.left", "net.assignments.right", "blocks.neg", 
+        "blocks.pos"))
     colnames(retval$topics) <- vocab
     retval
 }

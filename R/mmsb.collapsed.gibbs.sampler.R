@@ -11,5 +11,5 @@ function (network, K, num.iterations, alpha, beta.prior, initial = NULL,
         K, NULL, num.iterations, alpha, 1, beta.prior, network, 
         initial, burnin, trace = trace)
     retval[c("document_sums", "net.assignments.left", "net.assignments.right", 
-        "blocks.neg", "blocks.pos")]
+        "blocks.neg", "blocks.pos", if (is.null(burnin)) NULL else "document_expects")]
 }

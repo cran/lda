@@ -15,8 +15,8 @@
 \tabular{ll}{
 Package: \tab lda\cr
 Type: \tab Package\cr
-Version: \tab 1.2.2\cr
-Date: \tab 2010-10-18\cr
+Version: \tab 1.2.3\cr
+Date: \tab 2010-10-24\cr
 License: \tab BSD \cr
 LazyLoad: \tab yes\cr
 }

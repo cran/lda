@@ -7,7 +7,9 @@ result <-
   mmsb.collapsed.gibbs.sampler(sampson$SAMPLK3,
                                K = 3, num.iterations=30,
                                alpha = 0.1,
+                               burnin = 20L,
                                beta.prior = list(1, diag(5, 3) + 1))
+print(result$document_expects)
 cat("Time to plot the results...\n")
 memberships <- with(result, t(document_sums) / colSums(document_sums))
 colnames(memberships) <- paste("theta", 1:3, sep=".")
