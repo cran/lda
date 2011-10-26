@@ -8,7 +8,7 @@ function (documents, K, vocab, num.iterations, alpha, eta, annotations,
         as.double(alpha), as.double(eta), if (!logistic) as.double(annotations) else as.logical(annotations), 
         as.double(beta), as.double(variance), pmatch(method, 
             c("sLDA", "corrLDA", "prodLDA")), as.double(lambda), 
-        NULL, NULL, initial, burnin, FALSE, trace), names = c("assignments", 
+        NULL, NULL, initial, burnin, FALSE, trace, FALSE), names = c("assignments", 
         "topics", "topic_sums", "document_sums"))
     colnames(retval$topics) <- vocab
     retval
@@ -49,8 +49,8 @@ function (documents, K, vocab, num.iterations, alpha, eta, nbeta,
         as.integer(K), as.integer(length(vocab)), as.integer(num.iterations), 
         as.double(alpha), as.double(eta), NULL, NULL, NULL, NULL, 
         NULL, nbeta, as.logical(net.annotations), initial, burnin, 
-        FALSE, trace), names = c("assignments", "topics", "topic_sums", 
-        "document_sums", if (is.null(burnin)) NA else "document_expects", 
+        FALSE, trace, FALSE), names = c("assignments", "topics", 
+        "topic_sums", "document_sums", if (is.null(burnin)) NA else "document_expects", 
         "net.assignments.left", "net.assignments.right", "blocks.neg", 
         "blocks.pos"))
     colnames(retval$topics) <- vocab

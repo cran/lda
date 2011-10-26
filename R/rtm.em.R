@@ -1,6 +1,7 @@
 rtm.em <-
 function (documents, links, K, vocab, num.e.iterations, num.m.iterations, 
-    alpha, eta, lambda = 0.01, initial.beta = rep(3, K), trace = 0L, 
+    alpha, eta, lambda = sum(sapply(links, length))/(length(links) * 
+        (length(links) - 1)/2), initial.beta = rep(3, K), trace = 0L, 
     test.start = length(documents) + 1L) 
 {
     estimate.params <- function(document.sums) {

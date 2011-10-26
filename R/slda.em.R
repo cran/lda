@@ -1,7 +1,7 @@
 slda.em <-
 function (documents, K, vocab, num.e.iterations, num.m.iterations, 
     alpha, eta, annotations, params, variance, logistic = FALSE, 
-    lambda = 10, method = "sLDA", trace = 0L) 
+    lambda = 10, regularise = FALSE, method = "sLDA", trace = 0L) 
 {
     estimate.params <- function(document.sums, num.topics, logistic) {
         z.bar. <- t(document.sums)/colSums(document.sums)

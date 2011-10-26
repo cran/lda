@@ -15,19 +15,21 @@
 \tabular{ll}{
 Package: \tab lda\cr
 Type: \tab Package\cr
-Version: \tab 1.2.3\cr
-Date: \tab 2010-10-24\cr
+Version: \tab 1.3\cr
+Date: \tab 2011-10-26\cr
 License: \tab BSD \cr
 LazyLoad: \tab yes\cr
 }
 }
 \author{
-  Jonathan Chang (\email{jonchang@facebook.com})
+  Jonathan Chang (\email{jonchang@fb.com})
+  Andrew Dai (\email{a.dai@ed.ac.uk})
 
   Special thanks to the following for their reports and comments:
   Edo Airoldi,
   Jordan Boyd-Graber,
   Christopher E. Cramer,
+	James Danowski,
   Khalid El-Arini,
   Roger Levy,
   Solomon Messing,

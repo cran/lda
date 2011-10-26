@@ -5,6 +5,6 @@ function (edgelist, document_sums, alpha, beta)
     apply(edgelist + 1, 1, function(x) {
         exp((beta * (document_sums[, x[1]] + alpha)) %*% (document_sums[, 
             x[2]] + alpha)/sum(document_sums[, x[1]] + alpha)/sum(document_sums[, 
-            x[2]] + alpha) - max(beta))
+            x[2]] + alpha) - max(beta, 0))
     })
 }

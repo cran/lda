@@ -251,8 +251,8 @@ SEXP nubbi(SEXP documents,
     }
   }  
 
-  UNPROTECT(1);
   PutRNGstate();  
+  UNPROTECT(1);
   return retval;
 }
 
@@ -263,7 +263,6 @@ SEXP nubbi(SEXP documents,
   } \
   INTEGER(document_sums)[z + K * dd] += weight * count; \
   }
-
 
 SEXP rtm(SEXP documents,
 	 SEXP links,
@@ -467,8 +466,8 @@ SEXP rtm(SEXP documents,
     // const_ll = (V * lgammafn(eta) - lgammafn(eta * V)) * K; 
   }
   
-   UNPROTECT(1);
    PutRNGstate();  
+   UNPROTECT(1);
    return retval;
 }
 
@@ -490,7 +489,8 @@ SEXP collapsedGibbsSampler(SEXP documents,
 			   SEXP initial_,
 			   SEXP burnin_,
 			   SEXP compute_log_likelihood_,
-			   SEXP trace_) {
+			   SEXP trace_,
+			   SEXP freeze_topics_) {
   GetRNGstate();
   int dd;
   int ii;
@@ -613,6 +613,8 @@ SEXP collapsedGibbsSampler(SEXP documents,
 
   CHECKLEN(compute_log_likelihood_, Logical, 1);
   int compute_log_likelihood = LOGICAL(compute_log_likelihood_)[0];
+  CHECKLEN(freeze_topics_, Logical, 1);
+  int freeze_topics = LOGICAL(freeze_topics_)[0];
   if (compute_log_likelihood) {
     SET_VECTOR_ELT(retval, 9, log_likelihood = allocMatrix(REALSXP, 2, N));
   }
@@ -883,8 +885,11 @@ SEXP collapsedGibbsSampler(SEXP documents,
 	if (*z != -1) {
 	  topic_wk = &INTEGER(topics)[(*z) + K * word];
 	  topic_k = &INTEGER(topic_sums)[*z + K * topic_index];
-	  *topic_wk -= count;
-	  *topic_k -= count;
+	  if(!freeze_topics)
+	  {
+	    *topic_wk -= count;
+	    *topic_k -= count;
+	  }
 	  document_k = &INTEGER(document_sums)[K * dd + *z];
 	  *document_k -= count;
 
@@ -932,6 +937,11 @@ SEXP collapsedGibbsSampler(SEXP documents,
 		  double yv = 2 * LOGICAL(annotations)[dd] - 1.0;
 		  p[kk] /= 1.0 + exp(yv * (dv[dd] - change));
 		} else {
+      // How does this work?  
+      // dv[dd] = y - sum_{i != n} beta_{z_i} / N
+      // change = beta_{z_n} / N
+      // What we want to compute i:
+      // exp(2 * change * (dv[dd]) - change^2)
 		  p[kk] *= exp(change * (dv[dd] - change / 2) / var);
 		}
 	      } else if (method == prodLDA) {
@@ -948,6 +958,7 @@ SEXP collapsedGibbsSampler(SEXP documents,
 	}
 
 	if (p_sum <= 0.0) {
+	  kk = K - 1;
 	  error("Numerical problems (%g, %g).", dv[dd],
 		dv_update(annotations, dd, REAL(beta)[kk],
 			  var, nw, method, logistic));
@@ -969,8 +980,11 @@ SEXP collapsedGibbsSampler(SEXP documents,
 	  error("This should not have happened (%g).", r);
 	}
 
-	INTEGER(topics)[*z + K * word] += count;
-	INTEGER(topic_sums)[*z + K * topic_index] += count;
+	if(!freeze_topics)
+	{
+	  INTEGER(topics)[*z + K * word] += count;
+	  INTEGER(topic_sums)[*z + K * topic_index] += count;
+	}
 	INTEGER(document_sums)[K * dd + *z] += count;
 	if (burnin > -1 && iteration >= burnin) {
 	  INTEGER(document_expects)[K * dd + *z] += count;
@@ -1018,8 +1032,9 @@ SEXP collapsedGibbsSampler(SEXP documents,
     }
   }
 
-  UNPROTECT(1);
+
   PutRNGstate();
+  UNPROTECT(1);
   return retval;
 }
 

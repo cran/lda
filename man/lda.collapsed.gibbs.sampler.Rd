@@ -18,11 +18,11 @@
 \usage{
 lda.collapsed.gibbs.sampler(documents, K, vocab, num.iterations, alpha,
 eta, initial = NULL, burnin = NULL, compute.log.likelihood = FALSE,
-  trace = 0L)
+  trace = 0L, freeze.topics = FALSE)
 
 slda.em(documents, K, vocab, num.e.iterations, num.m.iterations, alpha,
 eta, annotations, params, variance, logistic = FALSE, lambda = 10,
-method = "sLDA", trace = 0L)
+regularise = FALSE, method = "sLDA", trace = 0L)
 
 mmsb.collapsed.gibbs.sampler(network, K, num.iterations, alpha,
 beta.prior, initial = NULL, burnin = NULL, trace = 0L)
@@ -113,11 +113,16 @@ beta.prior, initial = NULL, burnin = NULL, trace = 0L)
 }
   \item{logistic}{
     For \code{slda.em}, a scalar logical which, when \code{TRUE}, causes
-    the annoatations to be modeled using a logistic response instead of a
+    the annotations to be modeled using a logistic response instead of a
     Gaussian (the covariates will be coerced as logicals).  
 }
   \item{lambda}{
-    Currently unused.
+    When \var{regularise} is \code{TRUE}. This is a scalar that is the
+    standard deviation of the Gaussian prior on the regression coefficients.
+}
+  \item{regularise}{
+    When \code{TRUE}, a Gaussian prior is used for the regression
+    coefficients. This requires the \code{penalized} package.
 }
   \item{method}{
     For \code{slda.em}, a character indicating how to model the
@@ -127,6 +132,12 @@ beta.prior, initial = NULL, burnin = NULL, trace = 0L)
   \item{trace}{
     When \code{trace} is greater than zero, diagnostic messages will be
   output.  Larger values of \code{trace} imply more messages.
+}
+  \item{freeze.topics}{
+    When \code{TRUE}, topic assignments will occur but the counts of
+  words associated with topics will not change. \var{initial} should be
+  set when this option is used. This is best use for sampling test
+  documents.
 }
 
 }

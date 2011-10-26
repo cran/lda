@@ -35,28 +35,11 @@ qplot(Topics, Estimate, colour=Estimate, size=abs(t.value), data=coefs) +
   geom_errorbar(width=0.5, aes(ymin=Estimate-Std..Error,
                   ymax=Estimate+Std..Error)) + coord_flip()
 
-
-slda.predict <- function(documents, topics, model,
-                         alpha = 1.0 / nrow(topics),
-                         num.iterations = 5) {
-  ## Get the document matrix for each document
-  word.assignments <- sapply(documents,
-                            function(doc) {
-                              colSums(t(topics[,(doc[1,] + 1)]) * doc[2,])
-                            })
-  doc.assignments <- t(word.assignments) / colSums(word.assignments)
-
-  for (ii in 1:num.iterations) {
-    doc.assignments <- word.assignments * t(doc.assignments + alpha)
-    doc.assignments <- t(doc.assignments) / colSums(doc.assignments)
-  }
-
-  doc.assignments %*% coef(model)
-}
-
 predictions <- slda.predict(poliblog.documents,
-                            result$topics / as.vector(result$topic_sums), 
-                            result$model)
+                            result$topics, 
+                            result$model,
+                            alpha = 1.0,
+                            eta=0.1)
 
 qplot(predictions,
       fill=factor(poliblog.ratings),
