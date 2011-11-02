@@ -64,7 +64,7 @@ num.iterations = 100, average.iterations = 50, trace = 0L)
     Advances in Neural Information Processing Systems, 2008.}
 }
 \author{
-  Jonathan Chang (\email{jonchang@facebook.com})
+  Jonathan Chang (\email{jonchang@fb.com})
 }
 
 \seealso{

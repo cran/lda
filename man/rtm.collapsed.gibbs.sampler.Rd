@@ -102,7 +102,7 @@ rtm.em(documents, links, K, vocab, num.e.iterations, num.m.iterations,
   intelligence and statistics. 2009.}
 }
 \author{
-  Jonathan Chang (\email{jonchang@facebook.com})      
+  Jonathan Chang (\email{jonchang@fb.com})      
 }
 \seealso{
   See \code{\link{lda.collapsed.gibbs.sampler}} for a description of the

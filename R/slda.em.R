@@ -3,10 +3,21 @@ function (documents, K, vocab, num.e.iterations, num.m.iterations,
     alpha, eta, annotations, params, variance, logistic = FALSE, 
     lambda = 10, regularise = FALSE, method = "sLDA", trace = 0L) 
 {
+    if (K > length(documents) && !regularise) {
+        stop("K must be less than or equal to the length of documents.")
+    }
+    if (min(sapply(documents, length)) <= 0) {
+        stop("All documents must have positive length.")
+    }
     estimate.params <- function(document.sums, num.topics, logistic) {
         z.bar. <- t(document.sums)/colSums(document.sums)
         if (logistic) {
             model.fit <- glm(annotations ~ z.bar. + 0, family = binomial())
+        }
+        else if (regularise) {
+            library(penalized)
+            model.fit <- penalized(annotations ~ z.bar., unpenalized = ~0, 
+                lambda2 = 1/lambda^2, trace = FALSE)
         }
         else {
             model.fit <- lm(annotations ~ z.bar. + 0)
