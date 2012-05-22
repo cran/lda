@@ -167,7 +167,7 @@ SEXP nubbi(SEXP documents,
   double* probs = (double*) R_alloc(max_choices, sizeof(double));
 
    for (ii = 0; ii < N; ++ii) {
-     printf("Iteration %d\n", ii);
+     Rprintf("Iteration %d\n", ii);
      for (dd = 0; dd < D; ++dd) {
        R_CheckUserInterrupt();
 
@@ -362,7 +362,7 @@ SEXP rtm(SEXP documents,
 
   for (ii = 0; ii < N; ++ii) {
     if (trace > 0) {
-      printf("Iteration %d\n", ii);
+      Rprintf("Iteration %d\n", ii);
     }
     for (dd = 0; dd < D; ++dd) {
       R_CheckUserInterrupt();
@@ -752,7 +752,7 @@ SEXP collapsedGibbsSampler(SEXP documents,
   int iteration;
   for (iteration = 0; iteration < N; ++iteration) {
     if (trace >= 1) {
-      printf("Iteration %d\n", iteration);
+      Rprintf("Iteration %d\n", iteration);
     }
     for (dd = 0; dd < nd; ++dd) {
       R_CheckUserInterrupt();
@@ -975,7 +975,7 @@ SEXP collapsedGibbsSampler(SEXP documents,
 
 	if (*z == -1) {
 	  for (kk = 0; kk < K; ++kk) {
-	    printf("%g\n", p[kk]);
+	    Rprintf("%g\n", p[kk]);
 	  }
 	  error("This should not have happened (%g).", r);
 	}
@@ -1024,7 +1024,7 @@ SEXP collapsedGibbsSampler(SEXP documents,
 	topic_ll -= lgammafn(sum);
       }
       if (trace >= 2) {
-	printf("ll: %g + %g - %g - %g = %g\n", doc_ll, topic_ll, const_ll, const_prior,
+	Rprintf("ll: %g + %g - %g - %g = %g\n", doc_ll, topic_ll, const_ll, const_prior,
 	       doc_ll + topic_ll - const_ll - const_prior);
       }
       REAL(log_likelihood)[2 * iteration] = doc_ll - const_prior + topic_ll - const_ll;

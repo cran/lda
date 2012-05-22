@@ -1,26 +1,26 @@
 \name{filter.words}
 \Rdversion{1.1}
 \alias{filter.words}
-\alias{merge.documents}
+\alias{concatenate.documents}
 \alias{shift.word.indices}
 
 \title{
   Functions to manipulate text corpora in LDA format.
 }
 \description{
-  \code{merge.documents} concatenates a set of documents.
+  \code{concatenate.documents} concatenates a set of documents.
   \code{filter.words} removes references to certain words
   from a collection of documents.
   \code{shift.word.indices} adjusts references to words by a fixed amount.
 }
 \usage{
-merge.documents(...)
+concatenate.documents(...)
 filter.words(documents, to.remove)
 shift.word.indices(documents, amount)
 }
 \arguments{
   \item{\dots}{
-    For \code{merge.documents}, the set of corpora to be merged.  All
+    For \code{concatenate.documents}, the set of corpora to be merged.  All
   arguments to \code{\ldots} must be corpora of the same length.  The
   documents in the same position in each of the arguments will be
   concatenated, i.e., the new document 1 will be the concatenation of
@@ -94,7 +94,7 @@ shifted <- shift.word.indices(filtered[4:6], 100)
 ## [2,]    6    3
 
 ## Combine the unshifted documents and the shifted documents.
-merge.documents(filtered[1:3], shifted)
+concatenate.documents(filtered[1:3], shifted)
 ## [[1]]
 ##      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]
 ## [1,]    1   23   34   37   44  134  281  307

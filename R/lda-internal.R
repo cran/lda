@@ -18,7 +18,7 @@ function (data.dir, by.time = TRUE, files = c("elbo", "beta",
     "phi")) 
 {
     stopifnot(by.time)
-    all.files <- list.files(data.dir, "elbo-*", full = TRUE)
+    all.files <- list.files(data.dir, "elbo-*", full.names = TRUE)
     golden.file <- all.files[which.max(file.info(all.files)$mtime)]
     iteration <- strsplit(golden.file, "-")
     stopifnot(length(iteration) == 1)

@@ -15,8 +15,8 @@
 \tabular{ll}{
 Package: \tab lda\cr
 Type: \tab Package\cr
-Version: \tab 1.3\cr
-Date: \tab 2011-10-26\cr
+Version: \tab 1.3.2\cr
+Date: \tab 2012-05-22\cr
 License: \tab BSD \cr
 LazyLoad: \tab yes\cr
 }
@@ -53,7 +53,7 @@ Functions to read/create corpora:
 \code{\link{read.vocab}}
 
 Functions to manipulate corpora:
-\code{\link{merge.documents}}
+\code{\link{concatenate.documents}}
 \code{\link{filter.words}}
 \code{\link{shift.word.indices}}
 \code{\link{links.as.edgelist}}

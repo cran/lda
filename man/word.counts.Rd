@@ -52,7 +52,7 @@ document.lengths(docs)
   \code{\link{read.documents}} and \code{\link{lexicalize}} for ways of
   generating the input to these functions.
 
-  \code{\link{merge.documents}} for operations on a corpus.
+  \code{\link{concatenate.documents}} for operations on a corpus.
 }
 \examples{
 ## Load the cora dataset.

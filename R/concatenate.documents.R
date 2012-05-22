@@ -1,4 +1,4 @@
-merge.documents <-
+concatenate.documents <-
 function (...) 
 {
     lengths <- sapply(list(...), length)

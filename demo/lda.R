@@ -1,4 +1,5 @@
 require("ggplot2")
+require("reshape2")
 data(cora.documents)
 data(cora.vocab)
 
@@ -29,7 +30,7 @@ colnames(topic.proportions) <- apply(top.words, 2, paste, collapse=" ")
 
 topic.proportions.df <- melt(cbind(data.frame(topic.proportions),
                                    document=factor(1:N)),
-                             variable_name="topic",
+                             variable.name="topic",
                              id.vars = "document")  
 
 qplot(topic, value, fill=document, ylab="proportion",

@@ -1,14 +1,18 @@
 \name{slda.predict}
 \alias{slda.predict}
+\alias{slda.predict.docsums}
 \title{
   Predict the response variable of documents using an sLDA model.
 }
 \description{
-    This function takes a fitted sLDA model and predicts the value of
-    the response variable for each given document.  
+    These functions take a fitted sLDA model and predict the value of
+    the response variable (or document-topic sums) for each given document.  
 }
 \usage{
 slda.predict(documents, topics, model, alpha, eta,
+num.iterations = 100, average.iterations = 50, trace = 0L)
+
+slda.predict.docsums(documents, topics, alpha, eta,
 num.iterations = 100, average.iterations = 50, trace = 0L)
 }
 \arguments{
@@ -57,7 +61,9 @@ num.iterations = 100, average.iterations = 50, trace = 0L)
   with each document.
 }
 \value{
-  A numeric vector of the same length as \code{documents} giving the predictions.
+  For \code{slda.predict}, a numeric vector of the same length as
+  \code{documents} giving the predictions. For \code{slda.predict.docsums}, a
+  \eqn{K \times N} matrix of document assignment counts.  
 }
 \references{
   \cite{Blei, David M. and McAuliffe, John.  Supervised topic models.

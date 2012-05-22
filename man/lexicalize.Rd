@@ -80,7 +80,7 @@ lexicalize(doclines, sep = " ", lower = TRUE, count = 1L, vocab = NULL)
   \code{\link{word.counts}} to compute statistics associated with a
   corpus.
 
-  \code{\link{merge.documents}} for operations on a collection of documents.  
+  \code{\link{concatenate.documents}} for operations on a collection of documents.  
 }
 \examples{
 ## Generate an example.

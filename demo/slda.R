@@ -49,3 +49,14 @@ qplot(predictions,
       geom="density") +
   geom_vline(aes(xintercept=0)) +
   opts(legend.position = "none")
+
+predicted.docsums <- slda.predict.docsums(poliblog.documents,
+                                          result$topics, 
+                                          alpha = 1.0,
+                                          eta=0.1)
+predicted.proportions <- t(predicted.docsums) / colSums(predicted.docsums)
+
+qplot(`Topic 1`, `Topic 2`, 
+      data = structure(data.frame(predicted.proportions), 
+                       names = paste("Topic", 1:10)), 
+      size = `Topic 3`)

@@ -79,7 +79,7 @@ read.vocab(filename = "vocab.dat")
   \code{\link{word.counts}} to compute statistics associated with a
   corpus.
 
-  \code{\link{merge.documents}} for operations on a collection of documents.
+  \code{\link{concatenate.documents}} for operations on a collection of documents.
 }
 
 \examples{
