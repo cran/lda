@@ -3,7 +3,7 @@ require("reshape2")
 data(cora.documents)
 data(cora.vocab)
 
-theme_set(theme_bw())  
+theme_set(theme_bw())
 set.seed(8675309)
 
 K <- 10 ## Num clusters
@@ -34,7 +34,7 @@ topic.proportions.df <- melt(cbind(data.frame(topic.proportions),
                              id.vars = "document")  
 
 qplot(topic, value, fill=document, ylab="proportion",
-      data=topic.proportions.df, geom="bar") +
-  opts(axis.text.x = theme_text(angle=90, hjust=1)) +  
+      data=topic.proportions.df, geom="bar", stat="identity") +
+  theme(axis.text.x = element_text(angle=90, hjust=1)) +
   coord_flip() +
   facet_wrap(~ document, ncol=5)

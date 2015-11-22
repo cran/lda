@@ -3,6 +3,7 @@
 \alias{lda.collapsed.gibbs.sampler}
 \alias{slda.em}
 \alias{mmsb.collapsed.gibbs.sampler}
+\alias{lda.cvb0}
 
 \title{
   Functions to Fit LDA-type models
@@ -13,7 +14,8 @@
   blockmodel (MMSB), and supervised LDA (sLDA).  These functions take
   sparsely represented input documents, perform inference, and return
   point estimates of the latent parameters using the state at the last
-  iteration of Gibbs sampling.
+  iteration of Gibbs sampling. Multinomial logit for sLDA is supported 
+  using the multinom function from nnet package .
 }
 \usage{
 lda.collapsed.gibbs.sampler(documents, K, vocab, num.iterations, alpha,
@@ -22,10 +24,12 @@ eta, initial = NULL, burnin = NULL, compute.log.likelihood = FALSE,
 
 slda.em(documents, K, vocab, num.e.iterations, num.m.iterations, alpha,
 eta, annotations, params, variance, logistic = FALSE, lambda = 10,
-regularise = FALSE, method = "sLDA", trace = 0L)
+regularise = FALSE, method = "sLDA", trace = 0L, MaxNWts=3000)
 
 mmsb.collapsed.gibbs.sampler(network, K, num.iterations, alpha,
 beta.prior, initial = NULL, burnin = NULL, trace = 0L)
+
+lda.cvb0(documents, K, vocab, num.iterations, alpha, eta, trace = 0L)
 }
 
 \arguments{
@@ -101,11 +105,12 @@ beta.prior, initial = NULL, burnin = NULL, trace = 0L)
   \item{annotations}{
     A length D numeric vector of covariates associated with each
     document.  Only used by \code{slda.em} which models documents along
-    with numeric annotations associated with each document.
+    with numeric annotations associated with each document. When using the 
+    logistic option, annotations must be consecutive integers starting from 0.
 }
   \item{params}{
-    For \code{slda.em}, a length K numeric vector of regression
-    coefficients at which the EM algorithm should be initialized.
+    For \code{slda.em}, a length Kx(number of classes-1) numeric vector of 
+    regression coefficients at which the EM algorithm should be initialized.
 }
   \item{variance}{
     For \code{slda.em}, the variance associated with the Gaussian
@@ -114,7 +119,8 @@ beta.prior, initial = NULL, burnin = NULL, trace = 0L)
   \item{logistic}{
     For \code{slda.em}, a scalar logical which, when \code{TRUE}, causes
     the annotations to be modeled using a logistic response instead of a
-    Gaussian (the covariates will be coerced as logicals).  
+    Gaussian (the covariates must be consecutive integers starting from 
+    zero when used with sLDA).  
 }
   \item{lambda}{
     When \var{regularise} is \code{TRUE}. This is a scalar that is the
@@ -132,6 +138,11 @@ beta.prior, initial = NULL, burnin = NULL, trace = 0L)
   \item{trace}{
     When \code{trace} is greater than zero, diagnostic messages will be
   output.  Larger values of \code{trace} imply more messages.
+}
+ \item{MaxNWts}{
+    Input to the nnet's multinom function with a default value of 3000 maximum 
+    weights. Increasing this value may be necessary when using logistic sLDA with
+    a large number of topics at the necessary expense of longer run times. 
 }
   \item{freeze.topics}{
     When \code{TRUE}, topic assignments will occur but the counts of
@@ -186,8 +197,8 @@ A fitted model as a list with the following components:
   \item{model}{For \code{slda.em}, a model of type \code{\link{lm}},
     the regression
     model fitted to the annotations.}
-  \item{coefs}{For \code{slda.em}, a length K numeric vector of
-    coefficients for the regression model.}
+  \item{coefs}{For \code{slda.em}, a length Kx(number of classes-1) 
+   numeric vector of coefficients for the regression model.}
 }
 \references{
   \cite{Blei, David M. and Ng, Andrew and Jordan, Michael. Latent
@@ -202,9 +213,13 @@ A fitted model as a list with the following components:
 
   \cite{Griffiths, Thomas L. and Steyvers, Mark.  Finding scientific
     topics.  Proceedings of the National Academy of Sciences, 2004.}
+
+  \cite{Asuncion, A., Welling, M., Smyth, P., and Teh, Y. W.  On
+  smoothing and inference for topic models.  Uncertainty in Artificial Intelligence,
+  2009.}
 }
 \author{
-  Jonathan Chang (\email{jonchang@fb.com})  
+  Jonathan Chang (\email{slycoder@gmail.com})
 }
 \note{
   WARNING: This function does not compute precisely the correct thing
