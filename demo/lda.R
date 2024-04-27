@@ -33,8 +33,9 @@ topic.proportions.df <- melt(cbind(data.frame(topic.proportions),
                              variable.name="topic",
                              id.vars = "document")  
 
-qplot(topic, value, fill=document, ylab="proportion",
-      data=topic.proportions.df, geom="bar", stat="identity") +
+ggplot(topic.proportions.df, aes(x=topic, y=value, fill=document)) +
+  geom_bar(stat="identity") +
+  ylab("proportion") +
   theme(axis.text.x = element_text(angle=90, hjust=1)) +
   coord_flip() +
   facet_wrap(~ document, ncol=5)

@@ -3,7 +3,7 @@ function (documents, K, vocab, num.iterations, alpha, eta, initial = NULL,
     burnin = NULL, compute.log.likelihood = FALSE, trace = 0L, 
     freeze.topics = FALSE) 
 {
-    if (class(vocab) == "list") {
+    if (is(vocab, "list")) {
         lengths <- as.integer(sapply(vocab, length))
         all.vocab <- do.call(c, vocab)
     }

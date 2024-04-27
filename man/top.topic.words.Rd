@@ -45,6 +45,8 @@ top.topic.documents(document_sums, num.documents = 20, alpha = 0.1)
       \beta_{w,k} - 1 / K \sum_{k'} \log \beta_{w,k'})}.  
   }
   \item{alpha}{
+    The scalar value of the Dirichlet hyperparameter for
+    topic proportions. 
   }
 }
 \value{

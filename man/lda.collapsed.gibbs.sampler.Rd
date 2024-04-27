@@ -24,7 +24,8 @@ eta, initial = NULL, burnin = NULL, compute.log.likelihood = FALSE,
 
 slda.em(documents, K, vocab, num.e.iterations, num.m.iterations, alpha,
 eta, annotations, params, variance, logistic = FALSE, lambda = 10,
-regularise = FALSE, method = "sLDA", trace = 0L, MaxNWts=3000)
+regularise = FALSE, method = "sLDA", trace = 0L, MaxNWts=3000, 
+initial = NULL)
 
 mmsb.collapsed.gibbs.sampler(network, K, num.iterations, alpha,
 beta.prior, initial = NULL, burnin = NULL, trace = 0L)
@@ -165,7 +166,7 @@ A fitted model as a list with the following components:
     total number of times words were assigned to each topic.}
   \item{document_sums}{A \eqn{K \times D} matrix where each entry is an
     integer indicating the number of times words in each document
-    (column) were assigned to each topic (column).}
+    (column) were assigned to each topic (row).}
   \item{log.likelihoods}{Only for \code{lda.collapsed.gibbs.sampler}.  A
     matrix with 2 rows and \code{num.iterations} columns of log likelihoods when the flag
     \code{compute.log.likelihood} is set to \code{TRUE}.  The first row

@@ -1,10 +1,10 @@
 Package: lda
 Type: Package
 Title: Collapsed Gibbs Sampling Methods for Topic Models
-Version: 1.4.2
-Date: 2015-11-22
+Version: 1.5.2
+Date: 2024-04-25
 Author: Jonathan Chang
-Maintainer: Jonathan Chang <slycoder@gmail.com>
+Maintainer: Santiago Olivella <olivella@unc.edu>
 Description: Implements latent Dirichlet allocation (LDA)
 	     and related models.  This includes (but is not limited
 	     to) sLDA, corrLDA, and the mixed-membership stochastic
@@ -13,11 +13,12 @@ Description: Implements latent Dirichlet allocation (LDA)
 	     in C.  Utility functions for reading/writing data
 	     typically used in topic models, as well as tools for
 	     examining posterior distributions are also included.
-License: LGPL
+License: LGPL (>= 2.1)
 LazyLoad: yes
-Suggests: Matrix, reshape2, ggplot2 (>= 1.0.0), penalized, nnet
+Imports: methods (>= 4.3.0)
+Suggests: Matrix, reshape2, ggplot2 (>= 3.4.4), penalized, nnet
+Depends: R (>= 4.3.0)
 NeedsCompilation: yes
-Packaged: 2015-11-22 08:13:39 UTC; jonathanchang
-Depends: R (>= 2.10)
+Packaged: 2024-04-26 21:30:14 UTC; olivella
 Repository: CRAN
-Date/Publication: 2015-11-22 11:48:11
+Date/Publication: 2024-04-27 23:00:10 UTC

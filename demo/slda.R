@@ -31,7 +31,7 @@ coefs <- data.frame(coef(summary(result$model)))
 theme_set(theme_bw())
 coefs <- cbind(coefs, Topics=factor(Topics, Topics[order(coefs$Estimate)]))
 coefs <- coefs[order(coefs$Estimate),]
-qplot(Topics, Estimate, colour=Estimate, size=abs(t.value), data=coefs) +
+ggplot(coefs, aes(x=Topics, y=Estimate, colour=Estimate, size=abs(t.value))) +
   geom_errorbar(width=0.5, aes(ymin=Estimate-Std..Error,
                   ymax=Estimate+Std..Error)) + coord_flip()
 
@@ -40,13 +40,11 @@ predictions <- slda.predict(poliblog.documents,
                             result$model,
                             alpha = 1.0,
                             eta=0.1)
-
-qplot(predictions,
-      fill=factor(poliblog.ratings),
-      xlab = "predicted rating",
-      ylab = "density",
-      alpha=I(0.5),
-      geom="density") +
+res <- data.frame(predictions, poliblog.ratings)
+ggplot(res, aes(x=predictions, fill=factor(poliblog.ratings)))+
+  geom_density(alpha=0.5) +
+  xlab("predicted rating")+
+  ylab("density")+
   geom_vline(aes(xintercept=0)) +
   theme(legend.position = "none")
 
@@ -56,7 +54,7 @@ predicted.docsums <- slda.predict.docsums(poliblog.documents,
                                           eta=0.1)
 predicted.proportions <- t(predicted.docsums) / colSums(predicted.docsums)
 
-qplot(`Topic 1`, `Topic 2`, 
-      data = structure(data.frame(predicted.proportions), 
-                       names = paste("Topic", 1:10)), 
-      size = `Topic 3`)
+ggplot(structure(data.frame(predicted.proportions), 
+                 names = paste("Topic", 1:10)),
+       aes(x=`Topic 1`, y=`Topic 2`, size=`Topic 3`)) +
+  geom_point()

@@ -58,13 +58,19 @@ cite.counts <- table(factor(edges[,1],
 ## And which topic is most expressed by the cited document.
 max.topic <- apply(rtm.model$document_sums, 2, which.max)
 
-qplot(lda.similarity,
-      rtm.similarity,
-      size = log(cite.counts[sampled.edges[,1]]),
-      colour = factor(max.topic[sampled.edges[,2]]),
-      xlab = "LDA predicted link probability",
-      ylab = "RTM predicted link probability",      
-      xlim=c(0,1), ylim=c(0,1)) +
+res <- data.frame(lda.similarity, 
+                  rtm.similarity,
+                  cites = c(cite.counts[sampled.edges[,1]]),
+                  topic = factor(max.topic[sampled.edges[,2]]))
+ggplot(res, 
+        aes(x = lda.similarity,
+            y = rtm.similarity,
+            size = log(cites),
+            colour = topic)) +
+  geom_point() +
+  xlab("LDA predicted link probability") +
+  ylab("RTM predicted link probability") +      
+  xlim(c(0,1)) + ylim(c(0,1)) +
   scale_size(name="log(Number of citations)") +
   scale_colour_hue(name="Max RTM topic of citing document")
 

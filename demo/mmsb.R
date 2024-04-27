@@ -29,9 +29,10 @@ angle.diffs <- tapply(angles, as.factor(angles), function(x) {
 angles[order(angles)] <- unlist(angle.diffs)
 
 plot.1 <- ggplot(data = memberships) +
-  geom_segment(aes(x = c(0, 0, 1),  y = c(0, 1, 0),
-                   xend = c(0, 1, 0), yend = c(1, 0, 0))) +
   geom_point(aes(x = theta.1, y = theta.3, color = colors)) +
+  geom_segment(data=data.frame(x = c(0, 0, 1),  y = c(0, 1, 0),
+                   xend = c(0, 1, 0), yend = c(1, 0, 0)),
+               aes(x=x, y=y, xend=xend, yend=yend), inherit.aes = FALSE) +
   scale_colour_manual(values = structure(memberships$colors, names = memberships$colors)) +
   scale_x_continuous(breaks=seq(0, 1, length.out=5),
                      limits = c(-0.25, 1.25)) +
@@ -53,8 +54,8 @@ data <- as.data.frame(cbind(Probability=as.numeric(ratio),
                             Count=as.numeric(total),
                             Column=rep(1:3, each=3),
                             Row=rep(1:3, times=3)))
-plot.2 <- qplot(Column, Row, main="Block relations",
-                size=Count, colour=Probability, data=data) +
+plot.2 <- ggplot(data, aes(x=Column, y=Row, size=Count, colour=Probability)) +
+  ggtitle("Block relations") +
   scale_size(range=c(7,15)) +
   scale_x_continuous(breaks=1:3, limits=c(0.5, 3.5)) +
   scale_y_reverse(breaks=1:3, limits=c(3.5, 0.5))
